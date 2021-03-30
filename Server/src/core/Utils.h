@@ -8,6 +8,7 @@
 #include <iomanip>
 #include <random>
 #include <cstring>
+#include <algorithm>
 
 static const std::string base64_chars =
 	"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
