@@ -1,10 +1,12 @@
 #pragma once
 
-#pragma comment (lib, "ws2_32.lib")
-#pragma comment(lib, "fwpuclnt.lib")
+#ifdef PLATFORM_WINDOWS
+	#pragma comment (lib, "ws2_32.lib")
+	#pragma comment(lib, "fwpuclnt.lib")
 
-#include <WS2tcpip.h>
-#include <winsock2.h>
+	#include <WS2tcpip.h>
+	#include <winsock2.h>
+#endif
 
 #include <openssl/bio.h>
 #include <openssl/err.h>
