@@ -300,8 +300,12 @@ public:
 		char buffer[128];
 		std::string result = "";
 
+#ifdef PLATFORM_WINDOWS
 		FILE* pipe = _popen(command.c_str(), "r");
-
+#endif
+#ifdef PLATFORM_LINUX
+		FILE* pipe = popen(command.c_str(), "r");
+#endif
 		if (!pipe)
 			return "popen failed!";
 
@@ -310,8 +314,12 @@ public:
 				result += buffer;
 		}
 
+#ifdef PLATFORM_WINDOWS
 		_pclose(pipe);
-
+#endif
+#ifdef PLATFORM_LINUX
+		pclose(pipe);
+#endif
 		return result;
 	}
 
