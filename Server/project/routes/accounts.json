@@ -1,0 +1,39 @@
+[
+	{
+		"name": "ListAllAccounts",
+		"url": "/accounts",
+		"method": "GET",
+		"callback": "Accounts.index"
+	},
+	{
+		"name": "GetAccountById",
+		"url": "/accounts/:id",
+		"method": "GET",
+		"callback": "Accounts.find"
+	},
+	{
+		"name": "RemoveAccountById",
+		"url": "/accounts/:id",
+		"method": "DELETE",
+		"callback": "Accounts.remove",
+		"middlewares": ["jwt", "role(admin:read)"]
+	},
+	{
+		"name": "UpdateAccountById",
+		"url": "/accounts/:id",
+		"method": "PATCH",
+		"callback": "Accounts.update"
+	},
+	{
+		"name": "CreateAccount",
+		"url": "/accounts/new",
+		"method": "POST",
+		"callback": "Accounts.create"
+	},
+	{
+		"name": "Login",
+		"url": "/login",
+		"method": "POST",
+		"callback": "Accounts.login"
+	}
+]

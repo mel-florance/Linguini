@@ -1,0 +1,39 @@
+{
+	"name": "Account",
+	"fields": [
+		{
+			"name": "id",
+			"type": "integer",
+			"value": 0,
+			"increment": true,
+			"primary": true,
+			"not_null": true
+		},
+		{
+			"name": "login",
+			"type": "string",
+			"value": 0,
+			"not_null": true
+		},
+		{
+			"name": "password",
+			"type": "string",
+			"value": "",
+			"not_null": true
+		},
+		{
+			"name": "email",
+			"type": "string",
+			"value": "",
+			"not_null": true
+		},
+		{
+			"name": "created_at",
+			"type": "datetime",
+			"not_null": true
+		}
+	],
+	"associations": [
+
+	]
+}

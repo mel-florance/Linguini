@@ -1,0 +1,31 @@
+{
+	"name": "Battlehistory",
+	"fields": [
+		{
+			"name": "id",
+			"type": "integer",
+			"value": 0,
+			"increment": true,
+			"primary": true,
+			"not_null": true
+		},
+		{
+			"name": "account_id",
+			"type": "integer",
+			"value": ""
+		},
+		{
+			"name": "log",
+			"type": "text",
+			"value": ""
+		},
+		{
+			"name": "created_at",
+			"type": "datetime",
+			"not_null": true
+		}
+	],
+	"associations": [
+
+	]
+}

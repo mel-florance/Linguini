@@ -1,0 +1,22 @@
+{% include "header.html" %}
+
+<h2>Config</h2>
+
+<table class="table table-sm table-hover table-striped table-bordered">
+	<thead>
+		<tr>
+			<th style="width: 1%">Key</th>
+			<th>Value</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for pair in config %}
+		<tr>
+			<td>{{ pair.key }}</td>
+			<td>{{ pair.value }} </td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+
+{% include "footer.html" %}

@@ -1,0 +1,30 @@
+{% include "header.html" %}
+
+<h2>Routes</h2>
+
+<table class="table table-sm table-hover table-striped table-bordered">
+	<thead>
+		<tr>
+			<th>Method</th>
+			<th>Url</th>
+			<th>Name</th>
+			<th>Middlewares</th>
+			<th>Controller</th>
+			<th>Action</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for route in routes %}
+		<tr>
+			<td>{{ route.method }}</td>
+			<td><a href="{{ route.url }}">{{ route.url }}</a></td>
+			<td>{{ route.name }}</td>
+			<td>{{ route.middlewares }}</td>
+			<td>{{ route.controller }}</td>
+			<td>{{ route.action }}</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+
+{% include "footer.html" %}

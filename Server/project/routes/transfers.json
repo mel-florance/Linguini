@@ -1,0 +1,32 @@
+[
+	{
+		"name": "ListAllTranfers",
+		"url": "/transfers",
+		"method": "GET",
+		"callback": "Transfers.index"
+	},
+	{
+		"name": "GetTransferById",
+		"url": "/transfers/:id",
+		"method": "GET",
+		"callback": "Transfers.find"
+	},
+	{
+		"name": "RemoveTransferById",
+		"url": "/transfers/:id",
+		"method": "DELETE",
+		"callback": "Transfers.remove"
+	},
+	{
+		"name": "UpdateTransferById",
+		"url": "/transfers/:id",
+		"method": "PATCH",
+		"callback": "Transfers.update"
+	},
+	{
+		"name": "CreateTransfer",
+		"url": "/transfers",
+		"method": "POST",
+		"callback": "Transfers.create"
+	}
+]
