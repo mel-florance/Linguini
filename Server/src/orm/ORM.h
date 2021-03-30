@@ -11,7 +11,10 @@
 #include <unordered_map>
 #include <memory_resource>
 
-#include <Windows.h>
+#ifdef PLATFORM_WINDOWS
+	#include <Windows.h>
+#endif
+
 #include <mysql.h>
 
 #include "QueryBuilder.h"
