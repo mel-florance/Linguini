@@ -9,6 +9,8 @@
 #include <random>
 #include <cstring>
 #include <algorithm>
+#include <stdexcept>
+#include <stdio.h>
 
 static const std::string base64_chars =
 	"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -292,6 +294,25 @@ public:
 		strftime(date, sizeof date, "%a, %d %b %Y %T %z", localtime(&current));
 
 		return date;
+	}
+
+	inline static std::string exec(const std::string& command) {
+		char buffer[128];
+		std::string result = "";
+
+		FILE* pipe = _popen(command.c_str(), "r");
+
+		if (!pipe)
+			return "popen failed!";
+
+		while (!feof(pipe)) {
+			if (fgets(buffer, 128, pipe) != NULL)
+				result += buffer;
+		}
+
+		_pclose(pipe);
+
+		return result;
 	}
 
 	static std::string getMimeType(const std::string& extension);
