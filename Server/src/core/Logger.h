@@ -3,6 +3,7 @@
 #include <iostream>
 #include <ctime>
 #include <map>
+#include <cstdarg>
 
 #ifdef PLATFORM_WINDOWS
 #include <Windows.h>
@@ -52,7 +53,6 @@ public:
 
 	static void info(const std::string& category, const char* format, ...) {
 		char buffer[4096];
-
 		va_list args;
 		va_start(args, format);
 		vsnprintf(buffer, 4095, format, args);
