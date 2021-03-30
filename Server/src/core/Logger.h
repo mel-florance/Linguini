@@ -3,7 +3,10 @@
 #include <iostream>
 #include <ctime>
 #include <map>
+
+#ifdef PLATFORM_WINDOWS
 #include <Windows.h>
+#endif
 
 #include "Utils.h"
 
@@ -38,9 +41,11 @@ public:
 		va_start(args, format);
 		vsnprintf(buffer, 4095, format, args);
 
+#ifdef PLATFORM_WINDOWS
 		HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-
 		SetConsoleTextAttribute(hConsole, WHITE);
+#endif
+
 		std::string line = "[" + getTime() + "][" + category + "] " + buffer;
 		logs[category].push_back(line);
 		std::cout << line << '\n';
@@ -53,13 +58,18 @@ public:
 		va_start(args, format);
 		vsnprintf(buffer, 4095, format, args);
 
+#ifdef PLATFORM_WINDOWS
 		HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-
 		SetConsoleTextAttribute(hConsole, CYAN);
+#endif
+
 		std::string line = "[" + getTime() + "][" + category + "] " + buffer;
 		logs[category].push_back(line);
 		std::cout << line << '\n';
+
+#ifdef PLATFORM_WINDOWS
 		SetConsoleTextAttribute(hConsole, WHITE);
+#endif
 	}
 
 	static void warn(const std::string& category, const char* format, ...) {
@@ -69,13 +79,18 @@ public:
 		va_start(args, format);
 		vsnprintf(buffer, 4095, format, args);
 
+#ifdef PLATFORM_WINDOWS
 		HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-
 		SetConsoleTextAttribute(hConsole, YELLOW);
+#endif
+
 		std::string line = "[" + getTime() + "][" + category + "] " + buffer;
 		logs[category].push_back(line);
 		std::cout << line << '\n';
+
+#ifdef PLATFORM_WINDOWS
 		SetConsoleTextAttribute(hConsole, WHITE);
+#endif
 	}
 
 	static void success(const std::string& category, const char* format, ...) {
@@ -85,13 +100,18 @@ public:
 		va_start(args, format);
 		vsnprintf(buffer, 4095, format, args);
 
+#ifdef PLATFORM_WINDOWS
 		HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-
 		SetConsoleTextAttribute(hConsole, GREEN);
+#endif
+
 		std::string line = "[" + getTime() + "][" + category + "] " + buffer;
 		logs[category].push_back(line);
 		std::cout << line << '\n';
+
+#ifdef PLATFORM_WINDOWS
 		SetConsoleTextAttribute(hConsole, WHITE);
+#endif
 	}
 
 	static void error(const std::string& category, const char* format, ...) {
@@ -101,13 +121,18 @@ public:
 		va_start(args, format);
 		vsnprintf(buffer, 4095, format, args);
 
+#ifdef PLATFORM_WINDOWS
 		HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-
 		SetConsoleTextAttribute(hConsole, RED);
+#endif
+
 		std::string line = "[" + getTime() + "][" + category + "] " + buffer;
 		logs[category].push_back(line);
 		std::cout << line << '\n';
+
+#ifdef PLATFORM_WINDOWS
 		SetConsoleTextAttribute(hConsole, WHITE);
+#endif
 	}
 
 	static std::string getTime() {
