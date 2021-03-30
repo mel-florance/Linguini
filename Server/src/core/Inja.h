@@ -1,5 +1,10 @@
 // Copyright (c) 2020 Pantor. All rights reserved.
 
+#ifdef PLATFORM_LINUX
+	#define min(a,b) ((a)<(b)?(a):(b))
+	#define max(a,b) ((a)>(b)?(a):(b))
+#endif
+
 #ifndef INCLUDE_INJA_INJA_HPP_
 #define INCLUDE_INJA_INJA_HPP_
 
