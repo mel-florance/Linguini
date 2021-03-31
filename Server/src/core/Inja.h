@@ -3,13 +3,8 @@
 #ifndef INCLUDE_INJA_INJA_HPP_
 #define INCLUDE_INJA_INJA_HPP_
 
-#ifndef max
 #define max(a,b)            (((a) > (b)) ? (a) : (b))
-#endif
-
-#ifndef min
 #define min(a,b)            (((a) < (b)) ? (a) : (b))
-#endif
 
 #include "Json.h"
 
