@@ -178,6 +178,7 @@ private:
 
 		return out;
 	}
+
 	inline void sendHeader(
 		SOCKET handle,
 		const std::string& key,

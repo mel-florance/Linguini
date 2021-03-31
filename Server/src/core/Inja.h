@@ -1,12 +1,15 @@
 // Copyright (c) 2020 Pantor. All rights reserved.
 
-#ifdef PLATFORM_LINUX
-	#define min(a,b) ((a)<(b)?(a):(b))
-	#define max(a,b) ((a)>(b)?(a):(b))
-#endif
-
 #ifndef INCLUDE_INJA_INJA_HPP_
 #define INCLUDE_INJA_INJA_HPP_
+
+#ifndef max
+#define max(a,b)            (((a) > (b)) ? (a) : (b))
+#endif
+
+#ifndef min
+#define min(a,b)            (((a) < (b)) ? (a) : (b))
+#endif
 
 #include "Json.h"
 
@@ -43,7 +46,8 @@
 // #include "string_view.hpp"
 // Copyright 2017-2019 by Martin Moene
 //
-// string-view lite, a C++17-like string_view for C++98 and later.
+// string-view lite, a 
+// 17-like string_view for C++98 and later.
 // For more information see https://github.com/martinmoene/string-view-lite
 //
 // Distributed under the Boost Software License, Version 1.0.
