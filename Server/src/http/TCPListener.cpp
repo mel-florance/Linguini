@@ -47,8 +47,7 @@ int TCPListener::init()
 	sockaddr_in hint;
 	hint.sin_family = AF_INET;
 	hint.sin_port = htons(port);
-	hint.sin_addr.S_un.S_addr = INADDR_ANY;
-
+	hint.sin_addr.s_addr = INADDR_ANY;
 	int binding = bind(handle, (sockaddr*)&hint, sizeof hint);
 
 	if (binding == -1) {
