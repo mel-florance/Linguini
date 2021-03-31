@@ -16,6 +16,8 @@ TCPListener::TCPListener(const char* ip, int port) :
 
 int TCPListener::init()	
 {
+
+#ifdef PLATFORM_WINDOWS
 	WSADATA data;
 	WORD version = MAKEWORD(2, 2);
 
@@ -29,6 +31,7 @@ int TCPListener::init()
 	else {
 		ORM::logger.info("NETWORKING", "Initialized Winsock 2.2");
 	}
+#endif
 
 	SSL_library_init();
 	OpenSSL_add_all_algorithms();
@@ -38,7 +41,7 @@ int TCPListener::init()
 	handle = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
 	if (handle == INVALID_SOCKET) {
-		ORM::logger.error("NETWORKING", "Can't create socket: %d", WSAGetLastError());
+		ORM::logger.error("NETWORKING", "Can't create socket");
 		WSACleanup();
 		return 0;
 	}
@@ -51,7 +54,7 @@ int TCPListener::init()
 	int binding = bind(handle, (sockaddr*)&hint, sizeof hint);
 
 	if (binding == SOCKET_ERROR) {
-		ORM::logger.error("NETWORKING", "Can't bind socket: %d", WSAGetLastError());
+		ORM::logger.error("NETWORKING", "Can't bind socket");
 	}
 	
 	ORM::logger.info("NETWORKING", "Initialized TCP socket.");
@@ -66,7 +69,7 @@ int TCPListener::run()
 		int listening = listen(handle, 128);
 
 		if (listening == SOCKET_ERROR) {
-			ORM::logger.error("NETWORKING", "Can't listen socket: %d", WSAGetLastError());
+			ORM::logger.error("NETWORKING", "Can't listen socket");
 			return 0;
 		}
 
@@ -262,7 +265,7 @@ void TCPListener::socketEmit(TCPSocket* client, const char* message, int length)
 {
 	if (client->websocket) {
 		char send_buffer[512];
-		ZeroMemory(send_buffer, sizeof(send_buffer));
+		memset(send_buffer, 0, sizeof send_buffer);
 		send_buffer[0] = 0b10000001;
 
 		size_t txt_len = strlen(message);
