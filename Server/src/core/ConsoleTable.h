@@ -29,6 +29,11 @@ SOFTWARE.
 #ifndef _CPP_CONSOLE_TABLE_
 #define _CPP_CONSOLE_TABLE_
 
+#ifdef PLATFORM_WINDOWS
+	#undef max
+	#undef min
+#endif
+
 #include <algorithm> // max
 #include <iomanip> // setfill, setw, right, left
 #include <iostream> // ostream, endl
@@ -423,7 +428,7 @@ namespace samilton {
 			return *_tableData.at(row);
 		}
 		catch (std::out_of_range&) {
-			_rowSize = max(_rowSize, row + 1);
+			_rowSize = std::max(_rowSize, row + 1);
 
 			_tableData[row] = new ConsoleRow(this);
 			return *_tableData[row];
@@ -435,7 +440,7 @@ namespace samilton {
 			return *_rowData.at(column);
 		}
 		catch (std::out_of_range&) {
-			_parent->_columnSize = max(_parent->_columnSize, column + 1);
+			_parent->_columnSize = std::max(_parent->_columnSize, column + 1);
 
 			_rowData[column] = new ConsoleString();
 			return *_rowData[column];
@@ -460,7 +465,7 @@ namespace samilton {
 			for (size_t j = 0; j < table._rowSize; j++) {
 				if (table._tableData[j] != nullptr && table._tableData[j]->_rowData[i] != nullptr) {
 					for (const auto& k : table._tableData[j]->_rowData[i]->_str) {
-						tmp = max(tmp, k.size());
+						tmp = std::max(tmp, k.size());
 					}
 				}
 			}
@@ -473,7 +478,7 @@ namespace samilton {
 			size_t tmp = 1;
 			for (size_t j = 0; j < table._columnSize; j++) {
 				if (table._tableData[i] != nullptr && table._tableData[i]->_rowData[j] != nullptr) {
-					tmp = max(tmp, table._tableData[i]->_rowData[j]->_str.size());
+					tmp = std::max(tmp, table._tableData[i]->_rowData[j]->_str.size());
 				}
 			}
 			rowHeight.push_back(tmp);

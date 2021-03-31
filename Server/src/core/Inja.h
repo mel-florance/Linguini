@@ -3,8 +3,8 @@
 #ifndef INCLUDE_INJA_INJA_HPP_
 #define INCLUDE_INJA_INJA_HPP_
 
-#define max(a,b)            (((a) > (b)) ? (a) : (b))
-#define min(a,b)            (((a) < (b)) ? (a) : (b))
+#undef max
+#undef min
 
 #include "Json.h"
 
@@ -1857,8 +1857,8 @@ namespace inja {
 
 	namespace string_view {
 		inline nonstd::string_view slice(nonstd::string_view view, size_t start, size_t end) {
-			start = min(start, view.size());
-			end = min(max(start, end), view.size());
+			start = std::min(start, view.size());
+			end = std::min(std::max(start, end), view.size());
 			return view.substr(start, end - start);
 		}
 
