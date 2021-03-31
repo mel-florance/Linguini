@@ -63,9 +63,9 @@ int TCPListener::run()
 {
 	if (initialized)
 	{
-		int listening = listen(handle, 128);
+		auto listening = listen(handle, 128);
 
-		if (listening == SOCKET_ERROR) {
+		if (listening == -1) {
 			ORM::logger.error("NETWORKING", "Can't listen socket");
 			return 0;
 		}
@@ -86,13 +86,13 @@ int TCPListener::run()
 
 			for (int i = 0; i < socket_count; ++i)
 			{
-				SOCKET sock = copy.fd_array[i];
+				uintptr_t sock = copy.fd_array[i];
 				sockaddr_in addr = { 0 };
 				int addrlen = sizeof(addr);
 
 				if (sock == handle)
 				{
-					SOCKET client = accept(handle, (sockaddr*)&addr, &addrlen);
+					uintptr_t client = accept(handle, (sockaddr*)&addr, &addrlen);
 					FD_SET(client, &master);
 
 					auto ssl = SSL_new(ctx);
