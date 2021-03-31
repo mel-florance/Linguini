@@ -25,7 +25,6 @@ int TCPListener::init()
 
 	if (status != 0) {
 		ORM::logger.error("NETWORKING", "Can't init winsock: %d", WSAGetLastError());
-		WSACleanup();
 		return 0;
 	}
 	else {
@@ -42,7 +41,6 @@ int TCPListener::init()
 
 	if (handle == -1) {
 		ORM::logger.error("NETWORKING", "Can't create socket");
-		WSACleanup();
 		return 0;
 	}
 
