@@ -82,6 +82,7 @@ int TCPListener::run()
 		while (running)
 		{
 			fd_set copy = master;
+
 			int socket_count = select(0, &copy, 0, 0, 0);
 
 			for (int i = 0; i < socket_count; ++i)

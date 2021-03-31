@@ -15,6 +15,11 @@
 	#include <arpa/inet.h>
 	#include <stdlib.h>
 	#include <unistd.h>
+
+typedef struct fd_set {
+	u_int fd_count;
+	uintptr_t fd_array[FD_SETSIZE];
+} fd_set;
 #endif
 
 #include <openssl/bio.h>
