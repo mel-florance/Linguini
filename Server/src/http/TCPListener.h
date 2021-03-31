@@ -8,6 +8,15 @@
 	#include <winsock2.h>
 #endif
 
+#ifdef PLATFORM_LINUX
+	#include <sys/types.h>
+	#include <sys/socket.h>
+	#include <netinet/in.h>
+	#include <arpa/inet.h>
+	#include <stdlib.h>
+	#include <unistd.h>
+#endif
+
 #include <openssl/bio.h>
 #include <openssl/err.h>
 #include <openssl/pem.h>
