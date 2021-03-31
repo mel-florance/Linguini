@@ -40,7 +40,7 @@ int TCPListener::init()
 
 	handle = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
-	if (handle == INVALID_SOCKET) {
+	if (handle == -1) {
 		ORM::logger.error("NETWORKING", "Can't create socket");
 		WSACleanup();
 		return 0;
@@ -53,7 +53,7 @@ int TCPListener::init()
 
 	int binding = bind(handle, (sockaddr*)&hint, sizeof hint);
 
-	if (binding == SOCKET_ERROR) {
+	if (binding == -1) {
 		ORM::logger.error("NETWORKING", "Can't bind socket");
 	}
 	
@@ -237,8 +237,10 @@ int TCPListener::run()
 
 		FD_CLR(handle, &master);
 		closesocket(handle);
-	
+
+#ifdef PLATFORM_WINDOWS
 		WSACleanup();
+#endif
 	}
 
 	return 0;
