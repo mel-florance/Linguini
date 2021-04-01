@@ -1,10 +1,23 @@
 #pragma once
 
-#pragma comment (lib, "ws2_32.lib")
-#pragma comment(lib, "fwpuclnt.lib")
+#ifdef PLATFORM_WINDOWS
+	#pragma comment (lib, "ws2_32.lib")
+	#pragma comment (lib, "fwpuclnt.lib")
 
-#include <WS2tcpip.h>
-#include <winsock2.h>
+	#include <WS2tcpip.h>
+	#include <winsock2.h>
+#endif
+#ifdef PLATFORM_LINUX
+	#include <sys/types.h>
+	#include <sys/socket.h>
+	#include <netinet/in.h>
+	#include <arpa/inet.h>
+	#include <stdlib.h>
+	#include <unistd.h>
+
+	typedef int SOCKET;
+	#define SOCKET_ERROR -1
+#endif
 
 #include <openssl/bio.h>
 #include <openssl/ssl.h>
@@ -219,7 +232,7 @@ private:
 
 		auto handle = socket(PF_INET, SOCK_STREAM, 0);
 
-		if (handle == INVALID_SOCKET) {
+		if (handle == -1) {
 			ORM::logger.error("MAILER", "Cannot create mailer socket.");
 			return 1;
 		}
@@ -315,7 +328,12 @@ public:
 				sendCommand(handle, EOT, "", false, false, true);
 				sendCommand(handle, QUIT);
 
+#ifdef PLATFORM_WINDOWS
 				closesocket(handle);
+#endif
+#ifdef PLATFORM_LINUX
+				close(handle);
+#endif
 			}
 
 			return true;
