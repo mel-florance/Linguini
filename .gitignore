@@ -1,8 +1,8 @@
 #Directories
 
 .vs/
-bin/
-bin-int/
+Binaries/
+Build/
 
 *.user
 *.sln
