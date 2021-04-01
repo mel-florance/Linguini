@@ -82,8 +82,13 @@ project "Server"
 		}
 
 		links {
-			"mysql",
-			"openssl",
+			"mysqlclient:static",
+			"mysqlcppconn-static:static",
+			"ssl",
+			"crypto",
+			"pthread",
+			"dl",
+			"z"
 		}
 
 	filter "configurations:Debug"
