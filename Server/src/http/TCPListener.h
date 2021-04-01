@@ -17,6 +17,7 @@
 	#include <unistd.h>
 
 	typedef int SOCKET;
+	#define SOCKET_ERROR -1
 #endif
 
 #include <openssl/bio.h>

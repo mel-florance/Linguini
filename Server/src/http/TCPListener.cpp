@@ -89,7 +89,7 @@ int TCPListener::run()
 
 			if (socket_count == -1) {
 				ORM::logger.error("NETWORKING", "Error selecting socket.");
-				return;
+				return 1;
 			}
 
 			for (int i = 0; i < fd_max; ++i)
@@ -101,7 +101,7 @@ int TCPListener::run()
 				SOCKET sock = i;
 #endif
 				sockaddr_in addr = { 0 };
-				int addrlen = sizeof(addr);
+				socklen_t addrlen = sizeof(addr);
 
 				if (sock == handle)
 				{
@@ -151,7 +151,13 @@ int TCPListener::run()
 						if (bytes_in <= 0)
 						{
 							onClientDisconnected(data);
-							closesocket(sock);
+#ifdef PLATFORM_LINUX
+							close(handle);
+#endif
+#ifdef PLATFORM_WINDOWS
+							WSACleanup();
+							closesocket(handle);
+#endif
 							SSL_free(client->second->ssl);
 							FD_CLR(sock, &master);
 
@@ -247,7 +253,7 @@ int TCPListener::run()
 
 		FD_CLR(handle, &master);
 #ifdef PLATFORM_LINUX
-		close();
+		close(handle);
 #endif
 #ifdef PLATFORM_WINDOWS
 		WSACleanup();
@@ -266,9 +272,13 @@ void TCPListener::sendToClient(TCPSocket* client, const char* message, int lengt
 
 void TCPListener::broadcastToClients(int emitter, const char* message, int length)
 {
-	for (int i = 0; i < master.fd_count; ++i) {
+	for (int i = 0; i < fd_max; ++i) {
+#ifdef PLATFORM_WINDOWS
 		SOCKET out = master.fd_array[i];
-
+#endif
+#ifdef PLATFORM_LINUX
+		SOCKET out = i;
+#endif
 		if (out != handle && out != emitter) {
 			//sendToClient(out, message, length);
 		}
