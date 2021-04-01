@@ -71,8 +71,8 @@ project "Server"
 		systemversion "latest"
 
 		postbuildcommands {
-			"{COPY} ./project ../Binaries/Release-windows-x86_64/Server/project",
-			"{COPY} ./project ../Binaries/Debug-windows-x86_64/Server/project",
+			"{COPY} ./project ../Binaries/Release-linux-x86_64/Server/project",
+			"{COPY} ./project ../Binaries/Debug-linux-x86_64/Server/project",
 		}
 
 		defines {
