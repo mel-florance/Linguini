@@ -45,8 +45,6 @@ ORM::~ORM() {
 bool ORM::connect()
 {
 	mysql = mysql_init(nullptr);
-	unsigned long clientflag = 0;
-	const char* unix_socket = nullptr;
 
 	connected = false;
 	debug = env.get("DEBUG").compare("false") ? true : false;
@@ -69,8 +67,8 @@ bool ORM::connect()
 			password.c_str(),
 			database.c_str(),
 			port,
-			unix_socket,
-			clientflag
+			NULL,
+			0
 		);
 
 		//scanDatabase();
@@ -81,6 +79,7 @@ bool ORM::connect()
 
 	if (!connected) {
 		logger.error("ORM", "Cannot connect to the database.");
+		std::wcout << mysql_error(mysql) << std::endl;
 		return false;
 	}
 

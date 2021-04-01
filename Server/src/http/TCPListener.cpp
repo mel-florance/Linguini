@@ -48,10 +48,11 @@ int TCPListener::init()
 	sockaddr_in hint;
 	hint.sin_family = AF_INET;
 	hint.sin_port = htons(port);
-	hint.sin_addr.s_addr = inet_addr("0.0.0.0");
-	int binding = bind(handle, (sockaddr*)&hint, sizeof hint);
+	hint.sin_addr.s_addr = INADDR_ANY;
 
-	if (binding == -1) {
+	int binding = bind(handle, (struct sockaddr*)&hint, sizeof hint);
+
+	if (binding < 0) {
 		ORM::logger.error("NETWORKING", "Can't bind socket");
 	}
 	
