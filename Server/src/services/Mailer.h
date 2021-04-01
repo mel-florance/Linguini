@@ -14,6 +14,7 @@
 	#include <arpa/inet.h>
 	#include <stdlib.h>
 	#include <unistd.h>
+	#include <netdb.h>
 
 	typedef int SOCKET;
 	#define SOCKET_ERROR -1
@@ -237,12 +238,12 @@ private:
 			return 1;
 		}
 
-		SOCKADDR_IN addr;
+		sockaddr_in addr;
 		addr.sin_family = AF_INET;
 		addr.sin_port = htons(std::atoi(port.c_str()));
-		addr.sin_addr = *((LPIN_ADDR)*host->h_addr_list);
+		addr.sin_addr = *((in_addr*)*host->h_addr_list);
 
-		if (connect(handle, (PSOCKADDR)&addr, sizeof(addr))) {
+		if (connect(handle, (sockaddr*)&addr, sizeof(addr))) {
 			ORM::logger.error("MAILER", "Cannot connect mailer socket.");
 			return 1;
 		}
