@@ -9,7 +9,8 @@ TCPListener::TCPListener(const char* ip, int port) :
 	initialized(false),
 	private_key_file(""),
 	certificate_file(""),
-	clients({})
+	clients({}),
+	fd_max(0)
 {
 	initialized = init();
 }
@@ -72,6 +73,7 @@ int TCPListener::run()
 
 		FD_ZERO(&master);
 		FD_SET(handle, &master);
+		fd_max = handle;
 
 		SSL_CTX* ctx = createSSLContext();
 		configureSSLContext(ctx);
@@ -83,12 +85,21 @@ int TCPListener::run()
 		{
 			fd_set copy = master;
 
-			int socket_count = select(0, &copy, 0, 0, 0);
+			int socket_count = select(fd_max + 1, &copy, 0, 0, 0);
 
-			for (int i = 0; i < socket_count; ++i)
+			if (socket_count == -1) {
+				ORM::logger.error("NETWORKING", "Error selecting socket.");
+				return;
+			}
+
+			for (int i = 0; i < fd_max; ++i)
 			{
+#ifdef PLATFORM_WINDOWS
 				SOCKET sock = copy.fd_array[i];
-
+#endif
+#ifdef PLATFORM_LINUX
+				SOCKET sock = i;
+#endif
 				sockaddr_in addr = { 0 };
 				int addrlen = sizeof(addr);
 

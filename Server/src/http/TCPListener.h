@@ -97,6 +97,7 @@ private:
 	int port;
 	int handle;
 	fd_set master;
+	int fd_max;
 };
 
 
