@@ -1,0 +1,57 @@
+[
+	{
+		"name": "Status dashboard",
+		"url": "/",
+		"method": "GET",
+		"callback": "Status.dashboard"
+	},
+	{
+		"name": "Status config",
+		"url": "/status/config",
+		"middlewares": [ "BasicAuth" ],
+		"method": "GET",
+		"callback": "Status.config"
+	},
+	{
+		"name": "Status models",
+		"url": "/status/models",
+		"middlewares": [ "BasicAuth" ],
+		"method": "GET",
+		"callback": "Status.models"
+	},
+	{
+		"name": "Status controllers",
+		"url": "/status/controllers",
+		"middlewares": [ "BasicAuth" ],
+		"method": "GET",
+		"callback": "Status.controllers"
+	},
+	{
+		"name": "Status middlewares",
+		"url": "/status/middlewares",
+		"middlewares": [ "BasicAuth" ],
+		"method": "GET",
+		"callback": "Status.middlewares"
+	},
+	{
+		"name": "Status routes",
+		"url": "/status/routes",
+		"middlewares": [ "BasicAuth", "Role(admin, user, superadmin)" ],
+		"method": "GET",
+		"callback": "Status.routes"
+	},
+	{
+		"name": "Status static assets",
+		"url": "/status/static_assets",
+		"middlewares": [ "BasicAuth" ],
+		"method": "GET",
+		"callback": "Status.static_assets"
+	},
+	{
+		"name": "Status logs",
+		"url": "/status/logs",
+		"middlewares": [ "BasicAuth" ],
+		"method": "GET",
+		"callback": "Status.logs"
+	}
+]

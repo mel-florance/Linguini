@@ -1,0 +1,92 @@
+{% include "header.html" %}
+
+<h2>Logs</h2>
+<div id="status"></div>
+
+<ul class="nav nav-tabs" id="categories" role="tablist">
+	{% for category in logs %}
+	<li class="nav-item">
+		<a class="nav-link" id="{{ category.name }}-tab" data-toggle="tab" href="#{{ category.name }}">
+			{{ category.name }}
+		</a>
+	</li>
+	{% endfor %}
+</ul>
+<div class="tab-content" id="myTabContent">
+	{% for category in logs %}
+	<div class="tab-pane fade" id="{{ category.name }}">
+		<table class="table table-sm table-hover table-striped table-bordered">
+			<thead>
+				<tr>
+					<td>Time</td>
+					<td>Protocol</td>
+					<td>Method</td>
+					<td>Status</td>
+					<td>Size</td>
+					<td>Ip</td>
+					<td>Url</td>
+					<td>User agent</td>
+				</tr>
+			</thead>
+			<tbody>
+				{% if category.entries != null %}
+					{% for entry in category.entries %}
+						<tr>
+							<td>{{ entry.time }}</td>
+							<td>{{ entry.protocol }}</td>
+							<td>{{ entry.method }}</td>
+							<td>{{ entry.status }}</td>
+							<td>{{ entry.size }}</td>
+							<td>{{ entry.ip }}</td>
+							<td>{{ entry.url }}</td>
+							<td>{{ entry.agent }}</td>
+						</tr>
+					{% endfor %}
+				{% endif %}
+			</tbody>
+		</table>
+	</div>
+	{% endfor %}
+</div>
+		
+<script type="text/javascript">
+	window.onload = function () {
+		const ws = new WebSocket('wss://{% if ip == "127.0.0.1" %}localhost{% else %}192.168.1.20{% endif %}');
+		console.log("Websocket connecting...");
+
+		const updateStatus = status => {
+			let socket_status = document.getElementById("socket_status");
+			socket_status.textContent = status;
+
+			if (status == "offline") {
+				socket_status.classList.add("badge-secondary");
+				socket_status.classList.remove("badge-success");
+			} else {
+				socket_status.classList.remove("badge-secondary");
+				socket_status.classList.add("badge-success");
+			}
+		};
+
+		ws.onopen = function (event) {
+			console.log("Websocket connected");
+			updateStatus("online");
+			let message = JSON.stringify({ message: "Hello server!" });
+			ws.send(message);
+		};
+
+		ws.onmessage = function (event) {
+			let message = JSON.parse(event.data);
+			console.log("Websocket recv: ", message);
+		};
+
+		ws.onclose = function (event) {
+			console.log("Websocket disconnected");
+			updateStatus("offline");
+		};
+
+		ws.onerror = function (event) {
+			console.log("Websocket error:", event)
+		};
+	}
+</script>
+{% include "footer.html" %}

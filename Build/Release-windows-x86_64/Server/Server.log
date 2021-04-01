@@ -1,0 +1,4 @@
+﻿  TCPListener.cpp
+g:\code\linguini\server\src\http\tcplistener.cpp(258): warning C4018: '<' : incompatibilité signed/unsigned
+g:\code\linguini\server\src\http\tcplistener.cpp(272): warning C4309: '=' : troncation de valeur de constante
+  Server.vcxproj -> G:\Code\Linguini\Server\..\Binaries\Release-windows-x86_64\Server\Server.exe

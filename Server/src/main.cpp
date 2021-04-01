@@ -14,7 +14,7 @@ int main()
 
 	server.setPrivateKeyFile("./project/config/ssl/privkey.pem");
 	server.setCertificateFile("./project/config/ssl/cert.pem");
-	server.addStatic("/assets", "./static");
+	server.addStatic("/assets", "./project/static");
 
 	server.registerService<Mailer>("Mailer");
 

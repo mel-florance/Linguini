@@ -1,0 +1,74 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta charset="utf-8" />
+	<title>Error $error</title>
+	<style>
+		html, body {
+			text-align: center;
+			color: white;
+			position: relative;
+			text-shadow: 0 0 1px black;
+			font-family: sans-serif;
+			margin: 0;
+			padding: 0;
+		}
+		.header {
+			background: rgba(0,0,0,0.85);
+			position: absolute;
+			top: calc(50% - (140px / 2));
+			left: 0;
+			right: 0;
+			height: 200px;
+		}
+		#quote {
+			margin-bottom: 0;
+		}
+		.image {
+			z-index: -1;
+			position: fixed;
+			top: 0;
+			left: 0;
+			background-size: cover;
+		}
+		p {
+			margin: 0;
+		}
+		.version {
+			color: #aaa;
+			font-size: 11px;
+		}
+		h1 {
+			font-weight: 500
+		}
+	</style>
+</head>
+<body>
+	<div class="header">
+		<h1>$error $name</h1>
+		<img src="https://picsum.photos/1920/1080" alt="Random image" class="image" />
+		<h4 id="quote">...</h4>
+		<p>—</p>
+		<p id="author"></p>
+		<br />
+		<p class="version">$version</p>
+	</div>
+	<script>
+		const url = "https://api.quotable.io/random";
+		function generateQuote() {
+			fetch(url)
+				.then(function (data) {
+					return data.json();
+				})
+				.then(function (data) {
+					document.getElementById("quote").innerHTML = data.content;
+					document.getElementById("author").innerHTML = data.author;
+				})
+				.catch(function (err) {
+					console.log(err);
+				});
+		}
+		// Repeat generateQuote() every 10 seconds
+		setInterval(generateQuote(), 10000);
+	</script>
+</body>
+</html>

@@ -14,8 +14,8 @@ project "Server"
 	location "Server"
 	language "C++"
  
-	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+	targetdir ("Binaries/" .. outputdir .. "/%{prj.name}")
+	objdir ("Build/" .. outputdir .. "/%{prj.name}")
 
 	disablewarnings {
 		"4996",
@@ -42,10 +42,10 @@ project "Server"
 		systemversion "latest"
 
 		postbuildcommands {
-			"{COPY} ./project ../bin/Release-windows-x86_64/Server/project",
-			"{COPY} ./project ../bin/Debug-windows-x86_64/Server/project",
-			"{COPY} ./vendors/mysql/lib/libmysql.dll ../bin/Debug-windows-x86_64/Server",
-			"{COPY} ./vendors/mysql/lib/libmysql.dll ../bin/Release-windows-x86_64/Server"
+			"{COPY} ./project ../Binaries/Release-windows-x86_64/Server/project",
+			"{COPY} ./project ../Binaries/Debug-windows-x86_64/Server/project",
+			"{COPY} ./vendors/mysql/lib/libmysql.dll ../Binaries/Debug-windows-x86_64/Server",
+			"{COPY} ./vendors/mysql/lib/libmysql.dll ../Binaries/Release-windows-x86_64/Server"
 		}
 
 		defines {
@@ -71,8 +71,8 @@ project "Server"
 		systemversion "latest"
 
 		postbuildcommands {
-			"{COPY} ./project ../bin/Release-windows-x86_64/Server/project",
-			"{COPY} ./project ../bin/Debug-windows-x86_64/Server/project",
+			"{COPY} ./project ../Binaries/Release-windows-x86_64/Server/project",
+			"{COPY} ./project ../Binaries/Debug-windows-x86_64/Server/project",
 		}
 
 		defines {

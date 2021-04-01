@@ -1,0 +1,20 @@
+[
+	{
+		"name": "ListAllBattleHistory",
+		"url": "/battle-history",
+		"method": "GET",
+		"callback": "BattleHistory.index"
+	},
+	{
+		"name": "GetTheLastBattleHistory",
+		"url": "/battle-history/:id/last",
+		"method": "GET",
+		"callback": "BattleHistory.last"
+	},
+	{
+		"name": "SaveBattleHistory",
+		"url": "/battle-history/new",
+		"method": "POST",
+		"callback": "BattleHistory.new"
+	}
+]

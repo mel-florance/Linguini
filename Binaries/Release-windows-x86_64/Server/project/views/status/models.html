@@ -1,0 +1,36 @@
+{% include "header.html" %}
+
+<h2>Models</h2>
+
+{% for model in models %}
+<div class="row">
+	<div class="col-12">
+		<h4>{{ model.name }}</h4>
+		<table class="table table-sm table-hover table-striped table-bordered">
+			<thead>
+				<tr>
+					<th style="width: 1%">Name</th>
+					<th>Type</th>
+					<th>Size</th>
+					<th>Not null</th>
+					<th>Primary</th>
+					<th>Auto-increment</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for field in model.fields %}
+				<tr>
+					<td>{{ field.name }}</td>
+					<td>{{ field.type }} </td>
+					<td>{{ field.size }} </td>
+					<td>{{ field.not_null }} </td>
+					<td>{{ field.primary }} </td>
+					<td>{{ field.increment }} </td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>
+{% endfor %}
+{% include "footer.html" %}

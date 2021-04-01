@@ -87,7 +87,8 @@ int TCPListener::run()
 
 			for (int i = 0; i < socket_count; ++i)
 			{
-				uintptr_t sock = copy.fd_array[i];
+				SOCKET sock = copy.fd_array[i];
+
 				sockaddr_in addr = { 0 };
 				int addrlen = sizeof(addr);
 
@@ -234,10 +235,12 @@ int TCPListener::run()
 		ORM::logger.warn("NETWORKING", "Web server stopped.");
 
 		FD_CLR(handle, &master);
-		closesocket(handle);
-
+#ifdef PLATFORM_LINUX
+		close();
+#endif
 #ifdef PLATFORM_WINDOWS
 		WSACleanup();
+		closesocket(handle);
 #endif
 	}
 
