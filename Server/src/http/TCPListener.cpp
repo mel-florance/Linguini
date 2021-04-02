@@ -12,7 +12,7 @@ TCPListener::TCPListener(const char* ip, int port) :
 	clients({}),
 	fd_max(0)
 {
-	initialized = init();
+	initialized = init() == 0;
 }
 
 int TCPListener::init()	
@@ -26,7 +26,7 @@ int TCPListener::init()
 
 	if (status != 0) {
 		ORM::logger.error("NETWORKING", "Can't init winsock: %d", WSAGetLastError());
-		return 0;
+		return 1;
 	}
 	else {
 		ORM::logger.info("NETWORKING", "Initialized Winsock 2.2");
@@ -42,7 +42,7 @@ int TCPListener::init()
 
 	if (handle == -1) {
 		ORM::logger.error("NETWORKING", "Can't create socket");
-		return 0;
+		return 1;
 	}
 
 	sockaddr_in hint;
@@ -54,11 +54,12 @@ int TCPListener::init()
 
 	if (binding < 0) {
 		ORM::logger.error("NETWORKING", "Can't bind socket");
+		return 1;
 	}
 	
 	ORM::logger.info("NETWORKING", "Initialized TCP socket.");
 
-	return 1;
+	return 0;
 }
 
 int TCPListener::run()
