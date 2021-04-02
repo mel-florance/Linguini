@@ -25,5 +25,5 @@ int main()
 
 	server.run();
 
-	system("pause");
+	return 0;
 }
