@@ -94,7 +94,7 @@ int TCPListener::run()
 				return 1;
 			}
 
-			for (int i = 0; i < fd_max; ++i)
+			for (int i = 0; i <= fd_max; ++i)
 			{
 #ifdef PLATFORM_WINDOWS
 				SOCKET sock = copy.fd_array[i];
