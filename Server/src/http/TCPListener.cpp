@@ -10,14 +10,14 @@ TCPListener::TCPListener(const char* ip, int port) :
 	private_key_file(""),
 	certificate_file(""),
 	clients({}),
-	fd_max(0)
+	fd_max(0),
+	current(0)
 {
 	initialized = init() == 0;
 }
 
 int TCPListener::init()	
 {
-
 #ifdef PLATFORM_WINDOWS
 	WSADATA data;
 	WORD version = MAKEWORD(2, 2);
@@ -56,8 +56,8 @@ int TCPListener::init()
 		ORM::logger.error("NETWORKING", "Can't bind socket");
 		return 1;
 	}
-	
-	ORM::logger.info("NETWORKING", "Initialized TCP socket.");
+	else
+		ORM::logger.info("NETWORKING", "Initialized TCP socket.");
 
 	return 0;
 }
@@ -73,82 +73,81 @@ int TCPListener::run()
 			return 0;
 		}
 
-		FD_ZERO(&master);
-		FD_SET(handle, &master);
-		fd_max = handle;
-
 		SSL_CTX* ctx = createSSLContext();
 		configureSSLContext(ctx);
 
 		bool running = true;
 		ORM::logger.success("NETWORKING", "Web server listening on port %d", port);
 
+		fd_max = handle;
+
 		while (running)
 		{
-			fd_set copy = master;
+			int i = 0;
+			FD_ZERO(&master);
+			FD_SET(handle, &master);
 
-			int socket_count = select(0, &copy, 0, 0, 0);
+			for (i = 0; i < current; i++)
+				FD_SET(clients[i]->socket, &master);
 
-			if (socket_count == -1) {
+			int selecting = select(fd_max + 1, &master, 0, 0, 0);
+
+			if (selecting == -1) {
 				ORM::logger.error("NETWORKING", "Error selecting socket.");
-				return 1;
+				continue;
 			}
 
-			for (int i = 0; i <= socket_count; ++i)
+			sockaddr_in addr = { 0 };
+			socklen_t addrlen = sizeof(addr);
+
+			if (FD_ISSET(handle, &master))
 			{
-#ifdef PLATFORM_WINDOWS
-				SOCKET sock = copy.fd_array[i];
-#endif
-#ifdef PLATFORM_LINUX
-				SOCKET sock = i;
-#endif
-				sockaddr_in addr = { 0 };
-				socklen_t addrlen = sizeof(addr);
+				uintptr_t client = accept(handle, (sockaddr*)&addr, &addrlen);
 
-				if (sock == handle)
-				{
-					uintptr_t client = accept(handle, (sockaddr*)&addr, &addrlen);
-					FD_SET(client, &master);
+				auto ssl = SSL_new(ctx);
+				SSL_set_fd(ssl, client);
+				auto status = SSL_accept(ssl);
 
-					auto ssl = SSL_new(ctx);
-					SSL_set_fd(ssl, client);
-					auto status = SSL_accept(ssl);
-
-					if (status <= 0) {
-						ORM::logger.error("NETWORKING", "SSL Error: %s", ERR_error_string(ERR_get_error(), NULL));
-					}
-					else {
-						TCPSocket* data = new TCPSocket();
-						getpeername(sock, (sockaddr*)&addr, &addrlen);
-						data->ip = inet_ntoa(addr.sin_addr);
-						data->socket = client;
-						data->ssl = ssl;
-						data->websocket = false;
-
-						clients[data->socket] = data;
-
-						onClientConnected(data);
-					} 
+				if (status == -1) {
+					ORM::logger.error("NETWORKING", "SSL Error: %s", ERR_error_string(ERR_get_error(), NULL));
+					continue;
 				}
-				else
-				{
-					char buf[8192];
-					memset(buf, 0, sizeof buf);
 
-					auto client = clients.find(sock);
+				fd_max = client > fd_max ? client : fd_max;
+				FD_SET(client, &master);
 
-					if (client != clients.end())
-					{
-						int bytes_in = SSL_read(client->second->ssl, buf, sizeof(buf));
+				TCPSocket* data = new TCPSocket();
+				getpeername(client, (sockaddr*)&addr, &addrlen);
+
+				data->ip = inet_ntoa(addr.sin_addr);
+				data->socket = client;
+				data->ssl = ssl;
+				data->websocket = false;
+
+				clients[current] = data;
+				current++;
+
+				onClientConnected(data);
+			}
+			else {
+				int i = 0;
+				for (i = 0; i < current; ++i) {
+					if (FD_ISSET(clients[i]->socket, &master)) {
+						auto client = clients[i];
+
+						char buf[8192];
+						memset(buf, 0, sizeof buf);
+
+						int bytes_in = SSL_read(client->ssl, buf, sizeof(buf));
 
 						//int bytes_in = recv(sock, buf, 4096, 0);
 
 						TCPSocket* data = new TCPSocket();
-						getpeername(sock, (sockaddr*)&addr, &addrlen);
+						getpeername(client->socket, (sockaddr*)&addr, &addrlen);
 						data->ip = inet_ntoa(addr.sin_addr);
-						data->socket = sock;
-						data->websocket = client->second->websocket;
-						data->ssl = client->second->ssl;
+						data->socket = client->socket;
+						data->websocket = client->websocket;
+						data->ssl = client->ssl;
 
 						if (bytes_in <= 0)
 						{
@@ -160,10 +159,10 @@ int TCPListener::run()
 							WSACleanup();
 							closesocket(handle);
 #endif
-							SSL_free(client->second->ssl);
-							FD_CLR(sock, &master);
+							SSL_free(client->ssl);
+							FD_CLR(client->socket, &master);
 
-							clients.erase(client);
+							clients.erase(current);
 						}
 						else {
 							if (!data->websocket) {
@@ -186,7 +185,7 @@ int TCPListener::run()
 								if (opc == Websocket_OpCode::CONNECTION_CLOSE_FRAME)
 								{
 									std::cout << "WEBSOCKET CLOSED " << opc << std::endl;
-									clients[sock]->websocket = false;
+									clients[client->socket]->websocket = false;
 								}
 								else {
 									if (len <= 125)
