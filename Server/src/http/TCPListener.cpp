@@ -83,11 +83,10 @@ int TCPListener::run()
 
 		while (running)
 		{
-			int i = 0;
 			FD_ZERO(&master);
 			FD_SET(handle, &master);
 
-			for (i = 0; i < current; i++)
+			for (int i = 0; i < current; i++)
 				FD_SET(clients[i]->socket, &master);
 
 			int selecting = select(fd_max + 1, &master, 0, 0, 0);
@@ -130,8 +129,7 @@ int TCPListener::run()
 				onClientConnected(data);
 			}
 			else {
-				int i = 0;
-				for (i = 0; i < current; ++i) {
+				for (int i = 0; i < current; ++i) {
 					if (FD_ISSET(clients[i]->socket, &master)) {
 						auto client = clients[i];
 
@@ -139,11 +137,11 @@ int TCPListener::run()
 						memset(buf, 0, sizeof buf);
 
 						int bytes_in = SSL_read(client->ssl, buf, sizeof(buf));
-
 						//int bytes_in = recv(sock, buf, 4096, 0);
+				
+						getpeername(client->socket, (sockaddr*)&addr, &addrlen);
 
 						TCPSocket* data = new TCPSocket();
-						getpeername(client->socket, (sockaddr*)&addr, &addrlen);
 						data->ip = inet_ntoa(addr.sin_addr);
 						data->socket = client->socket;
 						data->websocket = client->websocket;
@@ -153,16 +151,17 @@ int TCPListener::run()
 						{
 							onClientDisconnected(data);
 #ifdef PLATFORM_LINUX
-							close(handle);
+							close(client->socket);
 #endif
 #ifdef PLATFORM_WINDOWS
 							WSACleanup();
-							closesocket(handle);
+							closesocket(client->socket);
 #endif
 							SSL_free(client->ssl);
 							FD_CLR(client->socket, &master);
 
 							clients.erase(current);
+							current--;
 						}
 						else {
 							if (!data->websocket) {
@@ -273,16 +272,10 @@ void TCPListener::sendToClient(TCPSocket* client, const char* message, int lengt
 
 void TCPListener::broadcastToClients(int emitter, const char* message, int length)
 {
-	for (int i = 0; i < fd_max; ++i) {
-#ifdef PLATFORM_WINDOWS
-		SOCKET out = master.fd_array[i];
-#endif
-#ifdef PLATFORM_LINUX
-		SOCKET out = i;
-#endif
-		if (out != handle && out != emitter) {
-			//sendToClient(out, message, length);
-		}
+	auto client = clients.find(emitter);
+
+	for (auto& client : clients) {
+		sendToClient(client.second, message, length);
 	}
 }
 

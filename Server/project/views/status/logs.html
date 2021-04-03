@@ -51,42 +51,42 @@
 		
 <script type="text/javascript">
 	window.onload = function () {
-		const ws = new WebSocket('wss://{% if ip == "127.0.0.1" %}localhost{% else %}192.168.1.20{% endif %}');
-		console.log("Websocket connecting...");
+		//const ws = new WebSocket('wss://{% if ip == "127.0.0.1" %}localhost{% else %}192.168.1.20{% endif %}');
+		//console.log("Websocket connecting...");
 
-		const updateStatus = status => {
-			let socket_status = document.getElementById("socket_status");
-			socket_status.textContent = status;
+		//const updateStatus = status => {
+		//	let socket_status = document.getElementById("socket_status");
+		//	socket_status.textContent = status;
 
-			if (status == "offline") {
-				socket_status.classList.add("badge-secondary");
-				socket_status.classList.remove("badge-success");
-			} else {
-				socket_status.classList.remove("badge-secondary");
-				socket_status.classList.add("badge-success");
-			}
-		};
+		//	if (status == "offline") {
+		//		socket_status.classList.add("badge-secondary");
+		//		socket_status.classList.remove("badge-success");
+		//	} else {
+		//		socket_status.classList.remove("badge-secondary");
+		//		socket_status.classList.add("badge-success");
+		//	}
+		//};
 
-		ws.onopen = function (event) {
-			console.log("Websocket connected");
-			updateStatus("online");
-			let message = JSON.stringify({ message: "Hello server!" });
-			ws.send(message);
-		};
+		//ws.onopen = function (event) {
+		//	console.log("Websocket connected");
+		//	updateStatus("online");
+		//	let message = JSON.stringify({ message: "Hello server!" });
+		//	ws.send(message);
+		//};
 
-		ws.onmessage = function (event) {
-			let message = JSON.parse(event.data);
-			console.log("Websocket recv: ", message);
-		};
+		//ws.onmessage = function (event) {
+		//	let message = JSON.parse(event.data);
+		//	console.log("Websocket recv: ", message);
+		//};
 
-		ws.onclose = function (event) {
-			console.log("Websocket disconnected");
-			updateStatus("offline");
-		};
+		//ws.onclose = function (event) {
+		//	console.log("Websocket disconnected");
+		//	updateStatus("offline");
+		//};
 
-		ws.onerror = function (event) {
-			console.log("Websocket error:", event)
-		};
+		//ws.onerror = function (event) {
+		//	console.log("Websocket error:", event)
+		//};
 	}
 </script>
 {% include "footer.html" %}
