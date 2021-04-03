@@ -40,6 +40,7 @@ public:
 
 			auto extension = fs::path(request.route.name).extension();
 			auto mime_type = Utils::getMimeType(extension.string());
+			std::cout << mime_type << std::endl;
 
 			std::ifstream file(request.route.name, std::ios::in | std::ios::binary);
 
