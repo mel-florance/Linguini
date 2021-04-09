@@ -73,7 +73,6 @@ public:
 		certificate_file = path;
 	}
 
-
 	static std::unordered_map<std::string, std::string> mount_points;
 	static std::unordered_map<std::string, std::unique_ptr<Controller>> controllers;
 	static std::unordered_map<std::string, std::unique_ptr<Middleware>> middlewares;

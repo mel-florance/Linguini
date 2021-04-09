@@ -40,35 +40,32 @@ public:
 
 			auto extension = fs::path(request.route.name).extension();
 			auto mime_type = Utils::getMimeType(extension.string());
-			std::cout << mime_type << std::endl;
+			auto file_size = fs::file_size(request.route.name);
 
-			std::ifstream file(request.route.name, std::ios::in | std::ios::binary);
+			std::cout << "MIME TYPE: \"" << mime_type << "\"" << std::endl;
 
-			if (!file.is_open())
-				return Response("Cannot open file", StatusCode::INTERNAL_SERVER_ERROR);
+			std::ifstream file(request.route.name, std::ios::out | std::ios::binary);
 
-			file.seekg(0, std::ios::end);
-			std::streampos size = file.tellg();
-			char* image = new char[size];
-			file.seekg(0, std::ios::beg);
-			file.read(image, size);
+			char* image = new char[file_size];
+			file.read(image, file_size);
 
 			std::ostringstream payload;
 			payload << "HTTP/1.1 200 OK\r\n";
 			payload << "Cache-Control: no-cache, private\r\n";
-			payload << "Content-Length: " + std::to_string(int(size)) + "\r\n";
-			payload << "Content-Type: " + mime_type + "\r\n";
+			payload << "Content-Length: " + std::to_string(file_size) + "\r\n";
+			payload << "Content-Type: " + Utils::trim(mime_type) + "\r\n";
 			payload << "Server: OHMyServer\r\n";
 			payload << "\r\n";
 
 			SSL_write(request.client->ssl, payload.str().c_str(), payload.str().size());
-			SSL_write(request.client->ssl, image, size);
+			SSL_write(request.client->ssl, image, file_size);
 
 	/*		send(request.client.socket, payload.str().c_str(), payload.str().size(), 0);
 			send(request.client.socket, image, size, 0);*/
 			file.close();
 
-			Response response("Ok");
+			Response response;
+			response.status = StatusCode::OK;
 			response.binary = true;
 			response.data = image;
 

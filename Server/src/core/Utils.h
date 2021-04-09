@@ -100,7 +100,7 @@ public:
 		return str;
 	}
 
-	static inline std::string& trim(std::string& str) {
+	static inline std::string trim(std::string& str) {
 		return ltrim(rtrim(str));
 	}
 
@@ -286,14 +286,14 @@ public:
 		return s;
 	}
 
-	inline static const char* getDateRFC822() {
+	inline static std::string getDateRFC822() {
 		time_t current;
 		char date[40];
 		time(&current);
 
 		strftime(date, sizeof date, "%a, %d %b %Y %T %z", localtime(&current));
 
-		return date;
+		return std::string(date);
 	}
 
 	inline static std::string exec(const std::string& command) {

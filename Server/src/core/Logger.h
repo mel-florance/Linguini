@@ -52,19 +52,25 @@
 	};
 #endif
 
-struct ColorModifier {
-	ColorModifier(Color code) : code(code) {}
-	Color code;
-
-	friend std::ostream& operator << (std::ostream& stream, const ColorModifier& color) {
-		return stream << "\033[" << color.code << "m";
-	}
-};
-
 class Logger {
 public:
 
 	Logger() {}
+
+	static void colorized_log(Color color, const std::string& category, const char* str) {
+#ifdef PLATFORM_WINDOWS
+		HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+		SetConsoleTextAttribute(hConsole, WHITE);
+		std::string line = "[" + getTime() + "][" + category + "] " + str;
+		logs[category].push_back(line);
+		std::cout << line << '\n';
+#endif
+#ifdef PLATFORM_LINUX
+		std::string line = "[" + getTime() + "][" + category + "] " + str;
+		logs[category].push_back(line);
+		std::cout << "\033[" << std::to_string(color) << "m" << line << '\n';
+#endif
+	};
 
 	static void log(const std::string& category, const char* format, ...) {
 		char buffer[4096];
@@ -72,24 +78,7 @@ public:
 		va_start(args, format);
 		vsnprintf(buffer, 4095, format, args);
 
-		std::string prefix;
-
-#ifdef PLATFORM_WINDOWS
-		HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-		SetConsoleTextAttribute(hConsole, WHITE);
-		prefix = buffer;
-#endif
-#ifdef PLATFORM_LINUX
-	ColorModifier color(Color::RED);
-	std::stringstream str;
-	str << color;
-	prefix += str.str();
-	prefix += buffer;
-#endif
-		prefix += buffer;
-		std::string line = "[" + getTime() + "][" + category + "] " + prefix;
-		logs[category].push_back(line);
-		std::cout << line << '\n';
+		colorized_log(Color::WHITE, category, buffer);
 	}
 
 	static void info(const std::string& category, const char* format, ...) {
@@ -98,18 +87,7 @@ public:
 		va_start(args, format);
 		vsnprintf(buffer, 4095, format, args);
 
-#ifdef PLATFORM_WINDOWS
-		HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-		SetConsoleTextAttribute(hConsole, CYAN);
-#endif
-
-		std::string line = "[" + getTime() + "][" + category + "] " + buffer;
-		logs[category].push_back(line);
-		std::cout << line << '\n';
-
-#ifdef PLATFORM_WINDOWS
-		SetConsoleTextAttribute(hConsole, WHITE);
-#endif
+		colorized_log(Color::CYAN, category, buffer);
 	}
 
 	static void warn(const std::string& category, const char* format, ...) {
@@ -118,19 +96,8 @@ public:
 		va_list args;
 		va_start(args, format);
 		vsnprintf(buffer, 4095, format, args);
-
-#ifdef PLATFORM_WINDOWS
-		HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-		SetConsoleTextAttribute(hConsole, YELLOW);
-#endif
-
-		std::string line = "[" + getTime() + "][" + category + "] " + buffer;
-		logs[category].push_back(line);
-		std::cout << line << '\n';
-
-#ifdef PLATFORM_WINDOWS
-		SetConsoleTextAttribute(hConsole, WHITE);
-#endif
+		
+		colorized_log(Color::YELLOW, category, buffer);
 	}
 
 	static void success(const std::string& category, const char* format, ...) {
@@ -140,18 +107,7 @@ public:
 		va_start(args, format);
 		vsnprintf(buffer, 4095, format, args);
 
-#ifdef PLATFORM_WINDOWS
-		HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-		SetConsoleTextAttribute(hConsole, GREEN);
-#endif
-
-		std::string line = "[" + getTime() + "][" + category + "] " + buffer;
-		logs[category].push_back(line);
-		std::cout << line << '\n';
-
-#ifdef PLATFORM_WINDOWS
-		SetConsoleTextAttribute(hConsole, WHITE);
-#endif
+		colorized_log(Color::GREEN, category, buffer);
 	}
 
 	static void error(const std::string& category, const char* format, ...) {
@@ -160,19 +116,8 @@ public:
 		va_list args;
 		va_start(args, format);
 		vsnprintf(buffer, 4095, format, args);
-
-#ifdef PLATFORM_WINDOWS
-		HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-		SetConsoleTextAttribute(hConsole, RED);
-#endif
-
-		std::string line = "[" + getTime() + "][" + category + "] " + buffer;
-		logs[category].push_back(line);
-		std::cout << line << '\n';
-
-#ifdef PLATFORM_WINDOWS
-		SetConsoleTextAttribute(hConsole, WHITE);
-#endif
+		
+		colorized_log(Color::RED, category, buffer);
 	}
 
 	static std::string getTime() {

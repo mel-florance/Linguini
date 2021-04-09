@@ -1,6 +1,7 @@
 #Directories
 
 .vs/
+.vscode/
 Binaries/
 Build/
 

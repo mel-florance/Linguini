@@ -306,16 +306,23 @@ public:
 					std::cout << e.what() << std::endl;
 				}
 
-				// TODO: cleanup this part
+				// TODO: cleanup this part && need to strip scripts tags as well
 				std::string styles;
 				std::string plain_text;
+
+				// Strip html style tags
 				std::regex_replace(std::back_inserter(styles), html.begin(), html.end(), std::regex("<style([\\s\\S]+?)</style>"), "$2");
+				// Strip other html tags
 				std::regex_replace(std::back_inserter(plain_text), styles.begin(), styles.end(), std::regex("<[^>]*>"), "$2");
 				
 				output += "--boundary-type-" + boundary + "\r\n";
 				output += "Content-type: text/plain;charset=\"iso-8859-1\"\r\n";
 				output += "Content-Transfer-Encoding: 8bit\r\n\r\n";
-				output += Utils::strip(Utils::strip(plain_text, '\t'), '\r\n');
+
+				// Replace multi lines jumps by only one jump
+				std::string stripped;
+				std::regex_replace(std::back_inserter(stripped), plain_text.begin(), plain_text.end(), std::regex("\\n\\s*\\n\\s*\\n"), "\n\n");
+				output += Utils::trim(stripped);
 
 				output += "\r\n\r\n--boundary-type-" + boundary + "\r\n";
 				output += "Content-type: text/html;charset=\"iso-8859-1\"\r\n";

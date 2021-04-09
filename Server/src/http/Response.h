@@ -10,7 +10,7 @@ using json = nlohmann::json;
 struct Response
 {
 	Response(
-		const std::string& body,
+		const std::string& body = "",
 		StatusCode status = StatusCode::OK,
 		const std::string& contentType = "text/plain"
 	) :
