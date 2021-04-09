@@ -26,19 +26,19 @@ public:
 	template<typename T>
 	inline void registerController(const std::string& name) {
 		controllers[name] = std::make_unique<T>(this);
-		logger.info("SERVER", "Registered controller %s", name);
+		logger.info("SERVER", "Registered controller %s", name.c_str());
 	};
 
 	template<typename T>
 	inline void registerMiddleware(const std::string& name) {
 		middlewares[name] = std::make_unique<T>();
-		logger.info("SERVER", "Registered middleware %s", name);
+		logger.info("SERVER", "Registered middleware %s", name.c_str());
 	};
 
 	template<typename T>
 	inline void registerService(const std::string& name) {
 		services[name] = std::make_shared<T>(this);
-		logger.info("SERVER", "Registered service %s", name);
+		logger.info("SERVER", "Registered service %s", name.c_str());
 	};
 
 
@@ -55,7 +55,7 @@ public:
 
 	inline void addStatic(const std::string& alias, const std::string& directory) {
 		mount_points[alias] = directory;
-		logger.info("SERVER", "Registered mount point %s -> %s", alias, directory);
+		logger.info("SERVER", "Registered mount point %s -> %s", alias.c_str(), directory.c_str());
 	}
 
 	inline void removeStatic(const std::string& alias) {

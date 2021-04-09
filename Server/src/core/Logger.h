@@ -11,11 +11,7 @@
 
 #include "Utils.h"
 
-class Logger {
-public:
-
-	Logger() {}
-
+#ifdef PLATFORM_WINDOWS
 	enum Color {
 		BLACK,
 		BLUE,
@@ -34,6 +30,41 @@ public:
 		YELLOW,
 		WHITE
 	};
+#endif
+#ifdef PLATFORM_LINUX
+	enum Color {
+		BLACK = 30,
+		BLUE = 34,
+		GREEN = 32,
+		CYAN = 36,
+		RED = 31,
+		MAGENTA = 95,
+		BROWN = 94,
+		LIGHTGRAY = 7,
+		DARKGRAY = 8,
+		LIGHTBLUE = 45,
+		LIGHTGREEN = 46,
+		LIGHTCYAN = 51,
+		LIGHTRED = 196,
+		LIGHTMAGENTA = 201,
+		YELLOW = 11,
+		WHITE = 15
+	};
+#endif
+
+struct ColorModifier {
+	ColorModifier(Color code) : code(code) {}
+	Color code;
+
+	friend std::ostream& operator << (std::ostream& stream, const ColorModifier& color) {
+		return stream << "\033[" << color.code << "m";
+	}
+};
+
+class Logger {
+public:
+
+	Logger() {}
 
 	static void log(const std::string& category, const char* format, ...) {
 		char buffer[4096];
@@ -41,12 +72,22 @@ public:
 		va_start(args, format);
 		vsnprintf(buffer, 4095, format, args);
 
+		std::string prefix;
+
 #ifdef PLATFORM_WINDOWS
 		HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 		SetConsoleTextAttribute(hConsole, WHITE);
+		prefix = buffer;
 #endif
-
-		std::string line = "[" + getTime() + "][" + category + "] " + buffer;
+#ifdef PLATFORM_LINUX
+	ColorModifier color(Color::RED);
+	std::stringstream str;
+	str << color;
+	prefix += str.str();
+	prefix += buffer;
+#endif
+		prefix += buffer;
+		std::string line = "[" + getTime() + "][" + category + "] " + prefix;
 		logs[category].push_back(line);
 		std::cout << line << '\n';
 	}
