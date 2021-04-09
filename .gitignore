@@ -8,3 +8,4 @@ Build/
 *.sln
 *.vcxproj
 *.vcxproj.filters
+dev.env
