@@ -48,7 +48,7 @@ void WebServer::onMessageReceived(TCPSocket* client, const char* message, int le
 	}
 
 	logger.log(
-		"SERVER",
+		"HTTP",
 		"%s %s %d - %s - %s - %s - %s",
 		request.headers.protocol.c_str(),
 		request.headers.method.c_str(),

@@ -63,6 +63,7 @@ public:
 
 	inline static std::string fieldTypeToStr(Field::Type type) {
 		switch (type) {
+		default: return "INVALID TYPE";
 		case Field::Type::CHAR: return "char";
 		case Field::Type::DATETIME: return "datetime";
 		case Field::Type::FLOAT: return "float";

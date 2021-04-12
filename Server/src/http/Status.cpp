@@ -3,6 +3,7 @@
 const char* statusCodeToStr(int code)
 {
 	switch (code) {
+	default: return "INVALID STATUS CODE";
 	case StatusCode::CONTINUE: return "CONTINUE";
 	case StatusCode::SWITCHING_PROTOCOL: return "SWITCHING PROTOCOL";
 	case StatusCode::PROCESSING: return "PROCESSING";

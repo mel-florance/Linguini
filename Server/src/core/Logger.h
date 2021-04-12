@@ -68,7 +68,7 @@ public:
 #ifdef PLATFORM_LINUX
 		std::string line = "[" + getTime() + "][" + category + "] " + str;
 		logs[category].push_back(line);
-		std::cout << "\033[" << std::to_string(color) << "m" << line << '\n';
+		std::cout << "\033[" << std::to_string(color) << "m" << line <<  "\e[0m" << '\n';
 #endif
 	};
 

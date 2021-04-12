@@ -109,6 +109,7 @@ public:
 
 	inline std::string cmdToStr(Command cmd) {
 		switch (cmd) {
+		default: return "INVALID COMMAND";
 		case Command::CONNECT: return "";
 		case Command::AUTH_DATA: return "";
 		case Command::HELO: return "HELO";
@@ -131,6 +132,7 @@ public:
 		const char* cc = "";
 		const char* bcc = "";
 		unsigned int priority = 3;
+		const char* id = nullptr;
 
 		inline void setHeader(
 			const std::string& name,
@@ -143,7 +145,7 @@ public:
 	};
 
 private:
-	inline const char* sendCommand(
+	inline void sendCommand(
 		SOCKET handle,
 		Command cmd,
 		const std::string& data = "",
@@ -180,7 +182,14 @@ private:
 			recv(handle, out, sizeof out, 0);
 
 			auto ack = verifyAck(out);
-			auto str = Utils::escape(Utils::split(out, "\r\n").at(0)).c_str();
+			auto parts = Utils::split(out, "\r\n");
+
+			if (parts.size() == 0) {
+				ORM::logger.error("MAILER", "Error while parsing response: %s", out);
+				return;
+			}
+
+			auto str = parts.at(0).c_str();
 
 			if (strlen(str) > 0) {
 				if (ack == -1 || ack >= 400)
@@ -189,8 +198,6 @@ private:
 					ORM::logger.success("MAILER", "RX: %s", str);
 			}
 		}
-
-		return out;
 	}
 
 	inline void sendHeader(
@@ -277,7 +284,7 @@ public:
 				sendCommand(handle, RCPT_TO, message.to, true, true);
 				sendCommand(handle, DATA);
 
-				sendHeader(handle, "Message-Id", Utils::random_string(32) + "@mx.virax.dev", true);
+				sendHeader(handle, "Message-Id", std::string(message.id) + "@mx.virax.dev", true);
 				sendHeader(handle, "Date", Utils::getDateRFC822());
 				sendHeader(handle, "X-Mailer", "OhMyMailer");
 
@@ -306,14 +313,18 @@ public:
 					std::cout << e.what() << std::endl;
 				}
 
-				// TODO: cleanup this part && need to strip scripts tags as well
+				// TODO: cleanup the plain text conversion 
 				std::string styles;
 				std::string plain_text;
 
-				// Strip html style tags
+				// Strip style tags
 				std::regex_replace(std::back_inserter(styles), html.begin(), html.end(), std::regex("<style([\\s\\S]+?)</style>"), "$2");
+				
+				// Replace links tag with the url only
+				std::string links = std::regex_replace(html, std::regex("<a\\s+(?:[^>]*?\\s+)?href=\"([^\"]*)\""), "$2");
+
 				// Strip other html tags
-				std::regex_replace(std::back_inserter(plain_text), styles.begin(), styles.end(), std::regex("<[^>]*>"), "$2");
+				std::regex_replace(std::back_inserter(plain_text), links.begin(), links.end(), std::regex("<[^>]*>"), "$2");
 				
 				output += "--boundary-type-" + boundary + "\r\n";
 				output += "Content-type: text/plain;charset=\"iso-8859-1\"\r\n";
@@ -322,7 +333,7 @@ public:
 				// Replace multi lines jumps by only one jump
 				std::string stripped;
 				std::regex_replace(std::back_inserter(stripped), plain_text.begin(), plain_text.end(), std::regex("\\n\\s*\\n\\s*\\n"), "\n\n");
-				output += Utils::trim(stripped);
+				output += Utils::strip(Utils::trim(stripped), '\t');
 
 				output += "\r\n\r\n--boundary-type-" + boundary + "\r\n";
 				output += "Content-type: text/html;charset=\"iso-8859-1\"\r\n";
@@ -335,6 +346,14 @@ public:
 
 				sendCommand(handle, EOT, "", false, false, true);
 				sendCommand(handle, QUIT);
+
+				json log;
+				log["gateway"] = hostname;
+				log["auth"] = username.size() > 0 && password.size() > 0;
+				log["from"] = message.from;
+				log["to"] = message.to;
+				log["id"] = message.id;
+
 
 #ifdef PLATFORM_WINDOWS
 				closesocket(handle);

@@ -161,7 +161,7 @@ public:
 				json object;
 				object["entries"] = {};
 
-				if (log.first == "SERVER") {
+				if (log.first == "HTTP") {
 					for (auto& entry : log.second) {
 			
 						std::string regex = R"~(\[([0-9\-\:\s]+)\]\[([A-Z]+)\]\s([A-Z\/0-9\.]+)\s([A-Z]+)\s([0-9]+)\s-\s([0-9A-Z.\s]+)\s-\s([0-9\.]+)\s-\s([A-Za-z0-9\?\-\_\/]+)\s-\s(.*))~";
@@ -180,6 +180,30 @@ public:
 									e["ip"] = matches[7].str();
 									e["url"] = matches[8].str();
 									e["agent"] = matches[9].str();
+
+									object["entries"].push_back(e);
+								}
+							}
+						}
+						catch (std::exception& e) {
+							std::cout << e.what() << std::endl;
+						}
+					}
+				}
+				else if (log.first == "NETWORKING" 
+					  || log.first == "SERVER"
+					  || log.first == "ROUTER") {
+					for (auto& entry : log.second) {
+						std::string regex = R"~(\[([0-9\-\:\s]+)\]\[([A-Z]+)\]\s(.*))~";
+
+						try {
+							std::smatch  matches;
+							if (std::regex_search(entry, matches, std::regex(regex)))
+							{
+								if (matches.size() > 0) {
+									json e;
+									e["time"] = matches[1].str();
+									e["message"] = matches[3].str();
 
 									object["entries"].push_back(e);
 								}

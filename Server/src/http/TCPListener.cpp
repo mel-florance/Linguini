@@ -290,15 +290,15 @@ void TCPListener::socketEmit(TCPSocket* client, const char* message, int length)
 		if (txt_len <= 125)
 		{
 			send_buffer[1] = txt_len;
-			snprintf(&send_buffer[2], 510, message);
+			snprintf(&send_buffer[2], 510, "%s", message);
 		}
 		else
-		{
+		{	
 			send_buffer[1] = 126;
 			send_buffer[2] = ((txt_len >> 8) & 0xff);
 			send_buffer[3] = ((txt_len >> 0) & 0xff);
 			//*((uint32*)&send_buffer[2]) = txt_len;
-			snprintf(&send_buffer[4], 508, message);
+			snprintf(&send_buffer[4], 508, "%s", message);
 		}
 
 		auto send_success = SSL_write(client->ssl, send_buffer, (int32_t)strlen(send_buffer));
