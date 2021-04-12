@@ -1,5 +1,9 @@
 # Linguini
-*A simple Web server written in C++ with the following features:
+[![GitHub license](https://img.shields.io/github/license/Vyraax/Linguini.svg)](https://github.com/Vyraax/Linguini/blob/master/LICENSE)&nbsp;
+[![GitHub tag](https://img.shields.io/github/tag/Vyraax/Linguini.svg)](https://gitHub.com/Vyraax/Linguini/tags/)&nbsp;
+![build](https://github.com/Vyraax/Linguini/workflows/Windows%20x64/badge.svg?branch=master)
+
+A simple Web server written in C++ with the following features:
 - MVC workflow
 - ORM with mysql connector
 - QueryBuilder
@@ -15,10 +19,6 @@
 - Json Web Token (in progress)
 - Simple integrated web server status monitoring
 - Multi application support (in progress)
-
-[![GitHub license](https://img.shields.io/github/license/Vyraax/Linguini.svg)](https://github.com/Vyraax/Linguini/blob/master/LICENSE)&nbsp;
-[![GitHub tag](https://img.shields.io/github/tag/Vyraax/Linguini.svg)](https://gitHub.com/Vyraax/Linguini/tags/)&nbsp;
-![build](https://github.com/Vyraax/Linguini/workflows/Windows%20x64/badge.svg?branch=master)
 
 ## Documentation
 You can access the documentation directly on the wiki page: [Documentation](https://github.com/Vyraax/Linguini/wiki)
