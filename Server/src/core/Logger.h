@@ -60,10 +60,11 @@ public:
 	static void colorized_log(Color color, const std::string& category, const char* str) {
 #ifdef PLATFORM_WINDOWS
 		HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-		SetConsoleTextAttribute(hConsole, WHITE);
+		SetConsoleTextAttribute(hConsole, color);
 		std::string line = "[" + getTime() + "][" + category + "] " + str;
 		logs[category].push_back(line);
 		std::cout << line << '\n';
+		SetConsoleTextAttribute(hConsole, Color::WHITE);
 #endif
 #ifdef PLATFORM_LINUX
 		std::string line = "[" + getTime() + "][" + category + "] " + str;

@@ -27,7 +27,7 @@ public:
 				"test@gmail.com"
 			};
 
-			mailer->Send("mails/action", message, data);
+			mailer->Send("mails/test", message, data);
 			
 			return Response::render("status/dashboard", data);
 		};

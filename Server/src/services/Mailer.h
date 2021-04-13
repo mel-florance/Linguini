@@ -132,7 +132,6 @@ public:
 		const char* cc = "";
 		const char* bcc = "";
 		unsigned int priority = 3;
-		const char* id = nullptr;
 
 		inline void setHeader(
 			const std::string& name,
@@ -244,7 +243,6 @@ private:
 			ORM::logger.error("MAILER", "Cannot create mailer socket.");
 			return 1;
 		}
-
 		sockaddr_in addr;
 		addr.sin_family = AF_INET;
 		addr.sin_port = htons(std::atoi(port.c_str()));
@@ -259,9 +257,9 @@ private:
 	}
 
 public:
-	inline void Send(
+	void Send(
 		const std::string& view,
-		const Message& message,
+		Message& message,
 		const json& data
 	) {
 		auto f1 = thread_pool->addTask([=]
@@ -284,7 +282,9 @@ public:
 				sendCommand(handle, RCPT_TO, message.to, true, true);
 				sendCommand(handle, DATA);
 
-				sendHeader(handle, "Message-Id", std::string(message.id) + "@mx.virax.dev", true);
+				auto id = Utils::random_string(32);
+
+				sendHeader(handle, "Message-Id", id + "@mx.virax.dev", true);
 				sendHeader(handle, "Date", Utils::getDateRFC822());
 				sendHeader(handle, "X-Mailer", "OhMyMailer");
 
@@ -352,7 +352,7 @@ public:
 				log["auth"] = username.size() > 0 && password.size() > 0;
 				log["from"] = message.from;
 				log["to"] = message.to;
-				log["id"] = message.id;
+				log["id"] = id;
 
 
 #ifdef PLATFORM_WINDOWS
