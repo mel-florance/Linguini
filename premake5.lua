@@ -41,13 +41,6 @@ project "Server"
 		staticruntime "On"
 		systemversion "latest"
 
-		postbuildcommands {
-			"{COPY} ./project ../Binaries/Release-windows-x86_64/Server/project",
-			"{COPY} ./project ../Binaries/Debug-windows-x86_64/Server/project",
-			"{COPY} ./vendors/mysql/lib/libmysql.dll ../Binaries/Debug-windows-x86_64/Server",
-			"{COPY} ./vendors/mysql/lib/libmysql.dll ../Binaries/Release-windows-x86_64/Server"
-		}
-
 		defines {
 			"PLATFORM_WINDOWS",
 			"_CRT_SECURE_NO_WARNINGS",
@@ -70,11 +63,6 @@ project "Server"
 		staticruntime "On"
 		systemversion "latest"
 
-		postbuildcommands {
-			"{COPY} ./project ../Binaries/Debug-linux-x86_64/Server/project",
-			"{COPY} ./project ../Binaries/Release-linux-x86_64/Server/project",
-		}
-
 		defines {
 			"PLATFORM_LINUX",
 			"_CRT_SECURE_NO_WARNINGS",
@@ -94,8 +82,32 @@ project "Server"
 	filter "configurations:Debug"
 		defines "DEBUG"
 		symbols "On"
+
+		if os.host() == "linux" then
+			postbuildcommands {
+				"{COPY} ./project ../Binaries/Debug-linux-x86_64/Server/project",
+			}
+		end
+
+		if os.host() == "windows" then
+			postbuildcommands {
+				"{COPY} ./project ../Binaries/Debug-windows-x86_64/Server/project",
+			}
+		end
 		
 	filter "configurations:Release"
 		defines "RELEASE"
 		runtime "Release"
 		optimize "On"
+
+		if os.host() == "linux" then
+			postbuildcommands {
+				"{COPY} ./project ../Binaries/Release-linux-x86_64/Server/project",
+			}
+		end
+
+		if os.host() == "windows" then
+			postbuildcommands {
+				"{COPY} ./project ../Binaries/Release-windows-x86_64/Server/project",
+			}
+		end
