@@ -13,7 +13,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Install dependencies
-      run: apt install libmysqlclient-dev libmysqlconn-dev openssl
+      run: sudo apt install libmysqlclient-dev libmysqlconn-dev openssl
     - name: Setup Project
       run: ./setup.sh
     - name: Compile Project
