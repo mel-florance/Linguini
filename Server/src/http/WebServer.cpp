@@ -13,10 +13,12 @@ WebServer::WebServer(int port, const char* ip) :
 	logger(Logger()),
 	router(Router()),
 	orm(ORM()),
+	store(Store()),
 	uaparser(UAParser("./project/data/user-agents.json"))
 {
 	orm.loadModels("./project/models/");
 	router.parse("./project/routes");
+	store.parse("./project/stores");
 	registerController<AppController>("App");
 }
 
@@ -27,7 +29,7 @@ void WebServer::onMessageReceived(TCPSocket* client, const char* message, int le
 	request.client = client;
 	request.parse();
 
-	Response response("");
+	Response response;
 
 	if (request.headers.use_websocket)
 	{

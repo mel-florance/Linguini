@@ -1,8 +1,22 @@
 #include "Headers.h"
 #include "WebServer.h"
+#include <regex>
 
 void Headers::parse(WebServer* server, TCPListener::TCPSocket* client)
 {
+	auto host = entries.find("Host");
+
+	if (host != entries.end())
+		this->host = host->second;
+
+	auto scheme = entries.find("Upgrade-Insecure-Requests");
+
+	if (scheme != entries.end()) {
+		this->scheme = scheme->second == "1" || scheme->second == "https"
+			? "https"
+			: "http";
+	}
+
 	// Parse websocket connection headers
 	auto upgrade = entries.find("Upgrade");
 	auto connection = entries.find("Connection");

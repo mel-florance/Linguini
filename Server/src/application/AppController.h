@@ -4,7 +4,21 @@
 #include "../orm/ORM.h"
 #include "../core/Json.h"
 
+#include <chrono>
+#include <iomanip>
+
+using namespace std::chrono_literals;
 using json = nlohmann::json;
+
+
+template <typename TP>
+std::time_t to_time_t(TP tp)
+{
+	using namespace std::chrono;
+	auto sctp = time_point_cast<system_clock::duration>(tp - TP::clock::now()
+		+ system_clock::now());
+	return system_clock::to_time_t(sctp);
+}
 
 class AppController : public Controller {
 public:
@@ -15,17 +29,29 @@ public:
 			if (!fs::exists(request.route.name))
 				return Response("Directory not found.", StatusCode::NOT_FOUND);
 
-			std::string out = "<ul>";
+			std::string out = "<table class=\"table\"><thead><tr><td>Name</td><td>Last modified</td><td>Size</td><tr></thead><tbody>";
 
 			for (const auto& entry : fs::directory_iterator(request.route.name))
 			{
 				auto str = fs::u8path(entry.path().string()).string();
 				auto stripped = str.substr(request.route.name.size(), str.size());
 				auto filename = stripped.substr(1, stripped.size());
-				out += "<li><a href=\"" + Utils::join({ request.route.alias, filename }, "/") + "\">\"" + filename + "\"</a></li>";
+				auto filesize = fs::file_size(str);
+
+				auto ftime = fs::last_write_time(str);
+				std::time_t tt = to_time_t(ftime);
+				std::tm* gmt = std::gmtime(&tt);
+				std::stringstream buffer;
+				buffer << std::put_time(gmt, "%A, %d %B %Y %H:%M");
+
+				out += "<tr>";
+					out += "<td><a href=\"" + Utils::join({ request.route.alias, filename }, "/") + "\">" + filename + "</a></td>";
+					out += "<td>" + buffer.str() + "</td>";
+					out += "<td>" + Utils::bytesToSize(filesize) + "</td>";
+				out += "</tr>";
 			}
 
-			out += "</ul>";
+			out += "</tbody></table>";
 
 			return Response(out, StatusCode::OK, "text/html");
 		};

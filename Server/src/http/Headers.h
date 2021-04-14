@@ -14,6 +14,8 @@ class WebServer;
 struct Headers
 {
 	std::string url;
+	std::string host;
+	std::string scheme;
 	std::string method;
 	std::string protocol;
 	std::unordered_map<std::string, std::string> entries;

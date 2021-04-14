@@ -14,6 +14,7 @@
 #include "../application/Controller.h"
 #include "../application/Middleware.h"
 #include "../application/Service.h"
+#include "../application/Store.h"
 #include "../core/Logger.h"
 #include "../core/EnvParser.h"
 #include "UAParser.h"
@@ -85,6 +86,7 @@ protected:
 	void onMessageReceived(TCPSocket* client, const char* message, int length) override;
 
 	UAParser uaparser;
+	Store store;
 	Logger logger;
 	ORM orm;
 };

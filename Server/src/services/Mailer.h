@@ -321,7 +321,7 @@ public:
 				std::regex_replace(std::back_inserter(styles), html.begin(), html.end(), std::regex("<style([\\s\\S]+?)</style>"), "$2");
 				
 				// Replace links tag with the url only
-				std::string links = std::regex_replace(html, std::regex("<a\\s+(?:[^>]*?\\s+)?href=\"([^\"]*)\""), "$2");
+				std::string links = std::regex_replace(styles, std::regex("href=\"([^\"]*)\""), "$1");
 
 				// Strip other html tags
 				std::regex_replace(std::back_inserter(plain_text), links.begin(), links.end(), std::regex("<[^>]*>"), "$2");

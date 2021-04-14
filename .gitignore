@@ -4,6 +4,7 @@
 .vscode/
 Binaries/
 Build/
+Makefile
 
 *.user
 *.sln
