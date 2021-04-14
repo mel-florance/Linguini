@@ -33,7 +33,9 @@ public:
 				try {
 					auto values = json::parse(str.c_str());
 
-					
+					for (auto& value : values) {
+						std::cout << "Getting  value" << std::endl;
+					}
 				}
 				catch (std::exception& e) {
 					std::cout << e.what() << std::endl;
