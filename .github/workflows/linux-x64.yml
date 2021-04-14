@@ -17,4 +17,4 @@ jobs:
     - name: Setup Project
       run: ./GenerateProject.sh
     - name: Compile Project
-      run: cd Linguini && make
+      run:  make
