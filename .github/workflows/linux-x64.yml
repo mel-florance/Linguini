@@ -15,6 +15,6 @@ jobs:
       run: sudo apt install libmysqlclient-dev libmysqlcppconn-dev openssl
     - uses: actions/checkout@v2
     - name: Setup Project
-      run: ./setup.sh
+      run: cd Linguini && ./setup.sh
     - name: Compile Project
-      run: make
+      run: cd Linguini && make
