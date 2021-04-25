@@ -6,6 +6,7 @@
 #include <memory>
 #include <sstream>
 #include <string>
+#include <cstring>
 #include <uv.h>
 
 typedef struct {
