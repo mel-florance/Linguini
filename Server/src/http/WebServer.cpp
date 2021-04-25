@@ -13,12 +13,17 @@ WebServer::WebServer(int port, const char* ip) :
 	logger(Logger()),
 	router(Router()),
 	orm(ORM()),
-	store(Store()),
 	uaparser(UAParser("./project/data/user-agents.json"))
 {
+	store = Store();
+
 	orm.loadModels("./project/models/");
 	router.parse("./project/routes");
 	store.parse("./project/stores");
+
+	for (auto route : store.http_routes)
+		router.addRoute(route);
+
 	registerController<AppController>("App");
 }
 

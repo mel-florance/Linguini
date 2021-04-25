@@ -1,0 +1,43 @@
+<html lang="en-us">
+<head>
+	<meta charset="utf-8" />
+	<title>Browsing {{ current_dir }}</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.1/css/bootstrap.min.css"
+		  integrity="sha384-VCmXjywReHh4PwowAiWNagnWcLhlEJLA5buUprzK8rxFgeH0kww/aWY76TfkUoSX"
+		  crossorigin="anonymous">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"
+			integrity="sha512-RXf+QSDCUQs5uwRKaDoXt55jygZZm2V++WUZduaU/Ui/9EGp3f/2KZVahFZBKGH0s774sd3HmrhUy+SgOFQLVQ=="
+			crossorigin="anonymous"></script>
+</head>
+<body>
+	<div class="container">
+		<h1>{{ current_dir }}</h1>
+		<table class="table table-sm table-hover table-striped table-bordered">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Last modified</th>
+					<th>Size</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td colspan="3"><a href="/../">..</a></td>
+				</tr>
+				{% for entry in entries %}
+				<tr>
+					<td>
+						{% if entry.is_folder == true %}
+							<i class="fas fa-folder"></i>
+						{% endif %}
+						<a href="{{ entry.url }}">{{ entry.name }}</a>
+					</td>
+					<td>{{ entry.modified }}</td>
+					<td>{{ entry.size }}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</body>

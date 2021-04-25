@@ -20,6 +20,8 @@
 	#define SOCKET_ERROR -1
 #endif
 
+#include <uv.h>
+
 #include <openssl/bio.h>
 #include <openssl/err.h>
 #include <openssl/pem.h>

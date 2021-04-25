@@ -13,7 +13,7 @@ project "Server"
 	kind "ConsoleApp"
 	location "Server"
 	language "C++"
- 
+
 	targetdir ("Binaries/" .. outputdir .. "/%{prj.name}")
 	objdir ("Build/" .. outputdir .. "/%{prj.name}")
 
@@ -32,6 +32,7 @@ project "Server"
 
 	includedirs {
 		"Server/vendors",
+		"Server/vendors/libuv/include",
 		"Server/vendors/mysql/include",
 		"Server/vendors/openssl/include",
 	}
@@ -47,11 +48,13 @@ project "Server"
 		}
 
 		libdirs {
+			"Server/vendors/libuv/lib",
 			"Server/vendors/mysql/lib",
 			"Server/vendors/openssl/lib",
 		}
 
 		links {
+			"uv",
 			"libmysql",
 			"libcrypto",
 			"openssl",
@@ -70,6 +73,7 @@ project "Server"
 		}
 
 		links {
+			"uv",
 			"mysqlclient:static",
 			"mysqlcppconn-static:static",
 			"ssl",
@@ -92,6 +96,8 @@ project "Server"
 		if os.host() == "windows" then
 			postbuildcommands {
 				"{COPY} ./project ../Binaries/Debug-windows-x86_64/Server/project",
+				"{COPY} ./vendors/mysql/lib/libmysql.dll ../Binaries/Debug-windows-x86_64/Server",
+				"{COPY} ./vendors/libuv/lib/uv.dll ../Binaries/Debug-windows-x86_64/Server",
 			}
 		end
 		
@@ -109,5 +115,7 @@ project "Server"
 		if os.host() == "windows" then
 			postbuildcommands {
 				"{COPY} ./project ../Binaries/Release-windows-x86_64/Server/project",
+				"{COPY} ./vendors/mysql/lib/libmysql.dll ../Binaries/Release-windows-x86_64/Server",
+				"{COPY} ./vendors/libuv/lib/uv.dll ../Binaries/Release-windows-x86_64/Server",
 			}
 		end

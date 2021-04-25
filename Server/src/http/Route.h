@@ -3,9 +3,16 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <regex>
 
 struct Route {
 	std::string name;
+	std::string summary;
+	std::string description;
+	std::vector<std::string> consumes;
+	std::vector<std::string> produces;
+	std::unordered_map<std::string, std::unordered_map<std::string, std::string>> responses;
+	std::vector<std::unordered_map<std::string, std::vector<std::string>>> security;
 	std::string alias;
 	std::string url;
 	std::string method;

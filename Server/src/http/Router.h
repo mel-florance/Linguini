@@ -34,6 +34,8 @@ public:
 	void parse(const std::string& directory);
 	Response dispatch(Request& request, WebServer* server);
 
+	inline void addRoute(const Route& route) { routes.push_back(route); }
+
 	std::vector<Route> routes;
 	std::string directory;
 };

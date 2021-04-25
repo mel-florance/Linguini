@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <string>
+#include <iostream>
 #include <locale>  
 #include <sstream>  
 #include <cctype>
@@ -9,6 +10,7 @@
 #include <random>
 #include <cstring>
 #include <algorithm>
+#include <filesystem>
 #include <stdexcept>
 #include <stdio.h>
 
@@ -16,6 +18,8 @@ static const std::string base64_chars =
 	"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	"abcdefghijklmnopqrstuvwxyz"
 	"0123456789+/";
+
+namespace fs = std::filesystem;
 
 class Utils 
 {
@@ -83,6 +87,31 @@ public:
 
 		return str;
 	}
+
+	static inline void getFoldersize(const std::string& folder, unsigned long long& size)
+	{
+		fs::path path(folder);
+
+		if (fs::exists(path)) {
+			fs::directory_iterator end_itr;
+
+			for (const auto& entry : fs::directory_iterator(path))
+			{
+				fs::path filePath(entry.path());
+
+				try {
+					if (!fs::is_directory(entry.status()))
+						size = size + file_size(filePath);
+					else
+						Utils::getFoldersize(filePath.string(), size);
+				}
+				catch (std::exception& e) {
+					std::cout << e.what() << std::endl;
+				}
+			}
+		}
+	}
+
 
 	static inline std::string strip(const std::string& str, char character = '"')
 	{
