@@ -1,0 +1,47 @@
+version: '3.7'
+networks:
+    linguini:
+volumes:
+    data:
+services:
+    web:
+        container_name: linguini_server
+        build: .
+        ports:
+            - "80:80"
+        tty: true
+        restart: always
+        environment:
+            - POST_MAX_SIZE=1G
+            - UPLOAD_MAX_FILESIZE=1G
+            - DISPLAY_ERRORS=1
+        volumes:
+            - ./:/app
+        networks:
+            - linguini
+    mysql:
+        image: mysql:5.7
+        volumes:
+            - data:/var/lib/mysql
+        restart: always
+        ports:
+            - "3306:3306"
+        environment:
+            MYSQL_ROOT_PASSWORD: password
+            MYSQL_DATABASE: warship
+            MYSQL_USER: root
+            MYSQL_PASSWORD: password
+        networks:
+            - linguini
+    phpmyadmin:
+        depends_on:
+            - mysql
+        image: phpmyadmin/phpmyadmin
+        restart: always
+        ports:
+            - '5000:80'
+        environment:
+            PMA_HOST: mysql
+            MYSQL_ROOT_PASSWORD: password
+        networks:
+            - linguini

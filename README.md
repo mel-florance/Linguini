@@ -30,10 +30,10 @@ You can access the documentation directly on the wiki page:\
 ###### Ubuntu build
 
 ```console
-sudo apt install libmysqlclient-dev libmysqlcppconn-dev openssl
+sudo apt install libmysqlclient-dev libmysqlcppconn-dev libuv1-dev openssl
 git clone https://github.com/Vyraax/Linguini.git
 cd Linguini
-./setup.sh
+./GenerateProject.sh
 make
 ```
 

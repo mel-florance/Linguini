@@ -3,6 +3,9 @@
 Binaries/
 Build/
 Makefile
+Server/vendors/mysql/lib
+Server/vendors/openssl/lib
+Server/vendors/libuv/lib
 
 *.user
 *.sln
